@@ -1,0 +1,18 @@
+-r requirements.txt
+
+# 测试
+pytest>=8.3,<9
+pytest-asyncio>=1.2,<1.3
+pytest-cov>=6,<7
+respx>=0.22,<0.23
+
+# 工具链
+ruff>=0.14,<0.15
+mypy>=1.18,<1.19
+types-redis
+types-python-dateutil
+pre-commit>=4.3,<4.4
+pip-audit>=2.7,<3
+
+# 压测
+locust>=2.42,<2.43

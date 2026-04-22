@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: paid-api-postgres
+    environment:
+      POSTGRES_DB: omniknight
+      POSTGRES_USER: omniknight
+      POSTGRES_PASSWORD: omniknight_dev
+    ports:
+      - "5433:5432"  # 避开老 backend 的 5432
+    volumes:
+      - paid_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omniknight -d omniknight"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: paid-api-redis
+    ports:
+      - "6380:6379"  # 避开默认 6379
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: .
+    container_name: paid-api
+    env_file: .env
+    environment:
+      PAID_DB_URL: postgresql+asyncpg://omniknight:omniknight_dev@postgres:5432/omniknight
+      PAID_REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  paid_pg_data:

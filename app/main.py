@@ -1,0 +1,49 @@
+"""FastAPI 应用入口。"""
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.v1 import api_v1, health
+from app.core.config import get_settings
+from app.infra import database, redis
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    database.init_engine()
+    redis.init_redis()
+    try:
+        yield
+    finally:
+        await redis.dispose_redis()
+        await database.dispose_engine()
+
+
+def create_app() -> FastAPI:
+    s = get_settings()
+    app = FastAPI(
+        title=s.PAID_APP_NAME,
+        version="0.1.0",
+        lifespan=lifespan,
+    )
+
+    if s.cors_origins_list:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=s.cors_origins_list,
+            allow_credentials=False,
+            allow_methods=["GET", "POST"],
+            allow_headers=["Authorization", "Content-Type", "Idempotency-Key"],
+        )
+
+    # /healthz 与 /readyz 暴露在根路径，方便反代健康检查
+    app.include_router(health.router)
+    # 业务接口走 /api/v1/*
+    app.include_router(api_v1)
+
+    return app
+
+
+app = create_app()
