@@ -4,9 +4,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.api.v1 import api_v1, health
+from app.core import errors
 from app.core.config import get_settings
+from app.core.middleware import request_id_middleware
 from app.infra import database, redis
 
 
@@ -37,6 +40,9 @@ def create_app() -> FastAPI:
             allow_methods=["GET", "POST"],
             allow_headers=["Authorization", "Content-Type", "Idempotency-Key"],
         )
+
+    app.add_middleware(BaseHTTPMiddleware, dispatch=request_id_middleware)
+    errors.install(app)
 
     # /healthz 与 /readyz 暴露在根路径，方便反代健康检查
     app.include_router(health.router)
