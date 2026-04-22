@@ -1,0 +1,44 @@
+app/infra/llm/retry.py
+  57ef1a8d7a4a181f 1-156
+app/infra/llm/agents.py
+  57ef1a8d7a4a181f 1-70
+app/main.py
+  57ef1a8d7a4a181f 14,21
+app/infra/llm/client.py
+  57ef1a8d7a4a181f 1-104
+tests/unit/test_llm_result_types.py
+  57ef1a8d7a4a181f 1-43
+app/infra/llm/observability.py
+  57ef1a8d7a4a181f 1-70
+app/infra/llm/__init__.py
+  57ef1a8d7a4a181f 1-11
+app/infra/llm/siliconflow.py
+  57ef1a8d7a4a181f 1-40
+app/infra/llm/result_types.py
+  57ef1a8d7a4a181f 1-34
+app/infra/llm/provider.py
+  57ef1a8d7a4a181f 1-34
+PROGRESS.md
+  57ef1a8d7a4a181f 6,11-16,19-22,24-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.9",
+  "base_commit_sha": "0db20b0226c793cffadf770525570ae9c482fcee",
+  "prompts": {
+    "57ef1a8d7a4a181f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9c46585-d1df-4251-b500-f603c2d12b5b",
+        "model": "claude-opus-4.7"
+      },
+      "human_author": "jiangqingfeng",
+      "messages": [],
+      "total_additions": 596,
+      "total_deletions": 29,
+      "accepted_lines": 580,
+      "overriden_lines": 0,
+      "messages_url": "https://gitai.gz.cvte.cn/cas/1abed5eea3b1d1be45d1bb59587f82ef231f054b5dca7ec2328c9dadbf75bcd6"
+    }
+  }
+}
