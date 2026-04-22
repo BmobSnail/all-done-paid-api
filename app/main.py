@@ -11,12 +11,14 @@ from app.core import errors
 from app.core.config import get_settings
 from app.core.middleware import request_id_middleware
 from app.infra import database, redis
+from app.infra.llm import client as llm_client
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     database.init_engine()
     redis.init_redis()
+    llm_client.init()
     try:
         yield
     finally:
