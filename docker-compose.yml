@@ -3,7 +3,7 @@ services:
     image: postgres:16-alpine
     container_name: paid-api-postgres
     environment:
-      POSTGRES_DB: omniknight
+      POSTGRES_DB: omniknight  # 历史遗留：PG 库名/用户名保持 omniknight（数据层不迁移，命名规范 v3.0 §4）
       POSTGRES_USER: omniknight
       POSTGRES_PASSWORD: omniknight_dev
     ports:

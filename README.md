@@ -1,14 +1,14 @@
-# Omniknight Paid API
+# All-Done Paid API
 
 > 独立的付费 API 服务（梅花易数等占卜工具的 LLM 解读）
 > 含 API Key 鉴权 / 限流 / 计费 / SSE 流式 / 幂等
 
 ## 项目背景
 
-本项目从 Omniknight 主仓库的 backend 中独立出来，专门承担**对外付费 API**职责。
-原 backend 继续服务前端/小程序内部 API，本项目走独立域名 `api-paid.all-done.cn`。
+本项目从主仓库（原 python-Omniknight，现 all-done-core）的 backend 中独立出来，专门承担**对外付费 API**职责。
+原 backend 继续服务前端/小程序内部 API，本项目走独立域名 `pay.all-done.cn`。
 
-详见上层 plan：`docs/plans/paid-api-bootstrap-plan.md`（Omniknight 主仓库）
+详见上层 plan：`docs/plans/paid-api-bootstrap-plan.md`（all-done-core 主仓库）
 
 ## 技术栈
 
@@ -26,7 +26,7 @@
 ## 架构
 
 ```
-api-paid.all-done.cn
+pay.all-done.cn
    ↓
 Nginx 反代 (8001)
    ↓
@@ -50,8 +50,8 @@ uvicorn app.main:app --reload  # 启动开发模式
 
 ## 部署
 
-预发：`api-paid-test.all-done.cn`
-生产：`api-paid.all-done.cn`
+预发：`api-paid-test.all-done.cn`（未启用）
+生产：`pay.all-done.cn`
 
 ```bash
 bash deploy.sh

@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "omniknight-paid-api"
+name = "all-done-paid-api"
 version = "0.1.0"
-description = "Omniknight Paid API - 独立的付费 API 服务"
+description = "All-Done Paid API - 独立的付费 API 服务"
 requires-python = ">=3.12"
 license = { text = "MIT" }
 

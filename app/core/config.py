@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     )
 
     # 应用基础
-    PAID_APP_NAME: str = "omniknight-paid-api"
+    PAID_APP_NAME: str = "all-done-paid-api"
     PAID_APP_ENV: str = "development"
     PAID_LOG_LEVEL: str = "INFO"
 
@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     PAID_WEB_CONCURRENCY: int = 4
 
     # Database
-    PAID_DB_URL: str = "postgresql+asyncpg://omniknight:omniknight_dev@localhost:5433/omniknight"
+    PAID_DB_URL: str = "postgresql+asyncpg://omniknight:omniknight_dev@localhost:5433/omniknight"  # 历史遗留：PG 库名/用户名保持 omniknight（数据层不迁移，命名规范 v3.0 §4）
     PAID_DB_POOL_SIZE: int = 20
     PAID_DB_MAX_OVERFLOW: int = 10
     PAID_DB_POOL_TIMEOUT: int = 30
@@ -61,7 +61,7 @@ class Settings(BaseSettings):
     PAID_LOGFIRE_ENABLED: bool = False
     PAID_LOGFIRE_TOKEN: str = ""
     PAID_LOGFIRE_ENV: str = "development"
-    PAID_LOGFIRE_SERVICE_NAME: str = "omniknight-paid-api"
+    PAID_LOGFIRE_SERVICE_NAME: str = "all-done-paid-api"
     PAID_LOGFIRE_SCRUB_FIELDS: str = "Authorization,X-API-Key,Cookie,phone,email,id_card"
 
     # Cache
