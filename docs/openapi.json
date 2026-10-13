@@ -1,0 +1,422 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "all-done-paid-api",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/healthz": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Liveness probe",
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Healthz Healthz Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/readyz": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Readiness probe (PG + Redis)",
+        "operationId": "readyz_readyz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Readyz Readyz Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/divination/meihua/cast": {
+      "post": {
+        "tags": [
+          "divination"
+        ],
+        "summary": "梅花易数起卦（纯计算）",
+        "operationId": "cast_endpoint_api_v1_divination_meihua_cast_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CastRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CastResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/divination/meihua/interpret": {
+      "post": {
+        "tags": [
+          "divination"
+        ],
+        "summary": "梅花易数 LLM 解读（SSE 流式）",
+        "operationId": "interpret_endpoint_api_v1_divination_meihua_interpret_post",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InterpretRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CastRequest": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "time",
+              "number"
+            ],
+            "title": "Method",
+            "default": "time"
+          },
+          "solar_datetime": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Solar Datetime",
+            "description": "ISO8601 含时区；method=time 时若不传则用服务器当前 UTC。"
+          },
+          "upper_num": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper Num"
+          },
+          "lower_num": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower Num"
+          },
+          "question": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question"
+          }
+        },
+        "type": "object",
+        "title": "CastRequest"
+      },
+      "CastResponse": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "title": "Method"
+          },
+          "solar_datetime": {
+            "type": "string",
+            "title": "Solar Datetime"
+          },
+          "question": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question"
+          },
+          "ben": {
+            "$ref": "#/components/schemas/GuaPayload"
+          },
+          "bian": {
+            "$ref": "#/components/schemas/GuaPayload"
+          },
+          "hu": {
+            "$ref": "#/components/schemas/GuaPayload"
+          },
+          "moving_line": {
+            "type": "integer",
+            "title": "Moving Line"
+          },
+          "cast_signature": {
+            "type": "string",
+            "title": "Cast Signature"
+          },
+          "cached": {
+            "type": "boolean",
+            "title": "Cached",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "method",
+          "solar_datetime",
+          "question",
+          "ben",
+          "bian",
+          "hu",
+          "moving_line",
+          "cast_signature"
+        ],
+        "title": "CastResponse"
+      },
+      "GuaPayload": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "upper": {
+            "type": "string",
+            "title": "Upper"
+          },
+          "lower": {
+            "type": "string",
+            "title": "Lower"
+          },
+          "symbol_upper": {
+            "type": "string",
+            "title": "Symbol Upper"
+          },
+          "symbol_lower": {
+            "type": "string",
+            "title": "Symbol Lower"
+          },
+          "lines": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Lines"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "upper",
+          "lower",
+          "symbol_upper",
+          "symbol_lower",
+          "lines"
+        ],
+        "title": "GuaPayload"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InterpretRequest": {
+        "properties": {
+          "cast": {
+            "$ref": "#/components/schemas/CastResponse",
+            "description": "必须使用 /cast 返回的完整结果"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cast"
+        ],
+        "title": "InterpretRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
